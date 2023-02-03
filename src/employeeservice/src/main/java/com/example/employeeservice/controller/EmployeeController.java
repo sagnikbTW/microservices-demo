@@ -6,6 +6,7 @@ import com.example.employeeservice.model.Employee;
 import com.example.employeeservice.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class EmployeeController {
 
     @GetMapping("/")
     public Iterable<Employee> findAll() {
+        MDC.put("route", "/");
         LOGGER.info("Employee find");
         return repository.findAll();
     }
