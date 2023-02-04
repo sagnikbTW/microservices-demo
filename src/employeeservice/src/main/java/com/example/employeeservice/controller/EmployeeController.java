@@ -37,6 +37,7 @@ public class EmployeeController {
     @GetMapping("/")
     public Iterable<Employee> findAll() {
         MDC.put("route", "/");
+        MDC.put("someKey", "val");
         LOGGER.info("Employee find");
         return repository.findAll();
     }
