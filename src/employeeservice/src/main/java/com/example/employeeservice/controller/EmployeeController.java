@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.employeeservice.model.Employee;
 import com.example.employeeservice.repository.EmployeeRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -19,8 +21,17 @@ public class EmployeeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeController.class);
 
+    private final EmployeeRepository repository;
+    private final MeterRegistry meterRegistry;
+    private final Counter visits;
+
     @Autowired
-    EmployeeRepository repository;
+    public EmployeeController(EmployeeRepository repository, MeterRegistry meterRegistry) {
+        this.repository = repository;
+        this.meterRegistry = meterRegistry;
+
+        visits = meterRegistry.counter("visits");
+    }
 
     @PostMapping("/")
     public Employee add(@RequestBody Employee employee) {
@@ -39,6 +50,8 @@ public class EmployeeController {
         MDC.put("route", "/");
         MDC.put("someKey", "val");
         LOGGER.info("Employee find");
+        visits.increment();
+
         return repository.findAll();
     }
 
